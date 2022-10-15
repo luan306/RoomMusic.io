@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Music</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="fontawesome-free-6.2.0-web/fontawesome-free-6.2.0-web/css/all.css" rel="stylesheet">
+    <link rel="icon" href="https://cdn.tgdd.vn/GameApp/2/224109/Screentshots/apple-music-224109-logo-07-06-2020.png" type="image/x-icon" />
+    <link href="css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+
+</head>
+
+<body>
+    <div class="player">
+        <div class="imageTop">
+            <div class="leftimg">
+                <img src="topleft.png" alt="" class="topleft">
+            </div>
+
+            <div class="leftimg">
+                <img src="topright.png" alt="" class="topleft">
+            </div>
+
+
+        </div>
+
+        <!-- dashboard -->
+        <div class="dashboard">
+
+            <header>
+                <h4>Music Room: Hạnh Phúc</h4>
+                <h2>String 57th & 9th</h2>
+            </header>
+            <div class="cd">
+                <div class="cd-thumb" style="background-image: url('https://i.ytimg.com/vi/jTLhQf5KJSc/maxresdefault.jpg')">
+                </div>
+            </div>
+            <div class="control">
+                <div class="btn btn-repeart">
+                    <i class="fa-solid fa-repeat"></i>
+                </div>
+                <div class="btn btn-prev">
+                    <i class="fa-solid fa-backward-step"></i>
+                </div>
+                <div class="btn btn-toggle-play">
+                    <i class="fa-solid fa-pause icon-pause"></i>
+                    <i class="fas fa-play icon-play"></i>
+                </div>
+                <div class="btn btn-next">
+                    <i class="fa-solid fa-forward-step"></i>
+                </div>
+                <div class="btn btn-ramdom">
+                    <i class="fa-solid fa-shuffle"></i>
+                </div>
+            </div>
+            <input id="progress" class="progress" type="range" value="0" step="1" min="0" max="100">
+            <audio id="audio" src="">
+                
+            </audio>
+        </div>
+        <div class="playlist">
+        </div>
+
+    </div>
+    <script>
+        var $ = document.querySelector.bind(document);
+        var $$ = document.querySelectorAll.bind(document);
+        const PLAYER_STORAGE_KEY = 'LUANCODEDAO'
+        const heading = $('header h2')
+        const cdThumb = $('.cd-thumb')
+        const audio = $('#audio')
+        const cd = $('.cd')
+        const playBtn = $('.btn-toggle-play')
+        const player = $('.player')
+        const progress = $('#progress')
+        const nextBtn = $('.btn-next')
+        const prevBtn = $('.btn-prev')
+        const ramdomBtn = $('.btn-ramdom')
+        const repeartBtn = $('.btn-repeart')
+        const playlist = $('.playlist')
+        const app = {
+            currentIndex: 0,
+            isPlaying: false,
+            isRamdom: false,
+            isRepeat: false,
+            config: JSON.parse(localStorage.getItem(PLAYER_STORAGE_KEY)) || {},
+            songs: [{
+                name: 'bts_permission',
+                Singer: 'BTS',
+                path: './music/bts_permission_to_dance_official_mv_-6612509486450579966.mp3',
+                image: 'https://cdnmedia.thethaovanhoa.vn/Upload/QDN4HPIpMrJuoPNyIvLDA/files/2022/10/BTS-Busan-concert.jpg'
+            }, {
+                name: 'bts_on',
+                Singer: 'BTS',
+                path: './music/bts_on_official_mv_8BWeCHMByoK-gucZKESf.mp3',
+                image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw9eG6w2lCwbJbp5W8ErZ8Odp62TFy7PN5sA&usqp=CAU'
+            }, {
+                name: 'bts_boy',
+                Singer: 'BTS',
+                path: './music/bts_boy_with_luv_feat_halsey_official_mv_-4199419685257816501.mp3',
+                image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/BTS_for_Dispatch_White_Day_Special%2C_27_February_2019_01.jpg/1200px-BTS_for_Dispatch_White_Day_Special%2C_27_February_2019_01.jpg'
+            }, {
+                name: 'Anpanman-BTS',
+                Singer: 'BTS',
+                path: './music/Anpanman-BTS.mp3',
+                image: 'https://1.bp.blogspot.com/-HruZLT3Ny_I/XnRvWXzHsfI/AAAAAAAAZaQ/zQXDuotRhBcqVIqlTE6qI2p7U7pKJD-zQCLcBGAsYHQ/s1600/Hinh-Anh-Nhom-Nhac-Han-Quoc-BTS%2B%25283%2529.jpg'
+            }, {
+                name: 'Black-Swan-BTS',
+                Singer: 'BTS',
+                path: './music/Black-Swan-BTS.mp3',
+                image: 'https://pdp.edu.vn/wp-content/uploads/2021/02/anh-bts-2020-map-of-the-soul-7.jpeg'
+            }, {
+                name: 'Dope-BTS',
+                Singer: 'BTS',
+                path: './music/Dope-BTS.mp3',
+                image: 'https://img.thuthuatphanmem.vn/uploads/2018/10/13/anh-dep-de-thuong-cua-bts_043512774.jpg'
+            }, {
+                name: 'HOME-BTS',
+                Singer: 'BTS',
+                path: './music/HOME-BTS.mp3',
+                image: 'https://zhair.com.vn/anh-bts-cute/imager_1_6511_300.jpg'
+            }, {
+                name: 'DNA-BTS',
+                Singer: 'BTS',
+                path: './music/DNA-BTS.mp3',
+                image: 'https://www.billboard.com/wp-content/uploads/2022/06/bts-door-concept-photo-courtesy-of-bighit-2022-billboard-1548.jpg?w=1024'
+            }, {
+                name: 'FAKE-LOVE-BTS',
+                Singer: 'BTS',
+                path: './music/FAKE-LOVE-BTS.mp3',
+                image: 'https://cdnmedia.thethaovanhoa.vn/Upload/PQgc44ci4D5b7WtAo06jg/files/2022/10/bts-top(9).jpg'
+            }, {
+                name: 'Permission-to-Dance-BTS',
+                Singer: 'BTS',
+                path: './music/Permission-to-Dance-BTS.mp3',
+                image: 'https://static01.nyt.com/images/2022/06/16/arts/14bts-1/14bts-1-mediumSquareAt3X.jpg'
+            }, {
+                name: 'Save-Me-BTS',
+                Singer: 'BTS',
+                path: './music/Save-Me-BTS.mp3',
+                image: 'https://cdnmedia.thethaovanhoa.vn/Upload/PQgc44ci4D5b7WtAo06jg/files/2022/10/bts-top(19).jpg'
+            }, {
+                name: 'The-Truth-Untold-BTS-Steve-Aoki',
+                Singer: 'BTS',
+                path: './music/The-Truth-Untold-BTS-Steve-Aoki.mp3',
+                image: 'https://image.thanhnien.vn/w1024/Uploaded/2022/zxaijr/2022_03_05/btslapkylucthegioimoi1-6082.jpg'
+            }, ],
+            setConfig: function(key, value) {
+                this.config[key] = value
+                localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(this.config))
+            },
+            render: function() {
+                var htmls = this.songs.map((song, index) => {
+                    return `
+                        <div class="song ${index === this.currentIndex ? 'active': ''}" data-index="${index}">
+                <div class="thumb" style="background-image:url('${song.image}') ;"></div>
+                <div class="body">
+                    <h3 class="title">
+                        ${song.name}
+                    </h3>
+                    <p class="author">
+                        ${song.Singer}
+                    </p>
+                </div>
+                <div class="option">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </div>
+            </div>
+                        `
+                })
+                playlist.innerHTML = htmls.join(" ")
+            },
+            defineProperties: function() {
+                Object.defineProperty(this, 'currentSong', {
+                    get: function() {
+                        return this.songs[this.currentIndex]
+                    }
+                })
+
+            },
+            handleEvents: function() {
+                const _this = this
+                const cdWidth = cd.offsetWidth
+                const cdThumbAnimate = cdThumb.animate([{
+                    transform: 'rotate(360deg)'
+                }], {
+                    duration: 10000,
+                    iterations: Infinity
+                })
+                cdThumbAnimate.pause()
+
+                document.onscroll = function() {
+                    const scrollTop = window.scrollY || document.documentElement.scrollTop
+                    const newcdWidth = cdWidth - scrollTop
+                    cd.style.width = newcdWidth > 0 ? newcdWidth + 'px' : 0
+                    cd.style.opacity = newcdWidth / cdWidth
+                }
+                playBtn.onclick = function() {
+                    if (_this.isPlaying) {
+                        _this.isPlaying = false
+                        audio.pause()
+                        player.classList.remove('playing')
+                    } else {
+                        audio.play()
+                    }
+                }
+                audio.onplay = function() {
+                    _this.isPlaying = true
+                    player.classList.add('playing')
+                    cdThumbAnimate.play()
+                }
+                audio.onpause = function() {
+                    _this.isPlaying = false
+                    player.classList.remove('playing')
+                    cdThumbAnimate.pause()
+
+                }
+                audio.ontimeupdate = function() {
+                    if (audio.duration) {
+                        const progressPercent = Math.floor(audio.currentTime / audio.duration * 100)
+                        progress.value = progressPercent
+                    }
+                }
+                progress.onchange = function(e) {
+
+                    const seekTime = audio.duration / 100 * e.target.value
+                    audio.currentTime = seekTime
+                }
+                nextBtn.onclick = function() {
+                    if (_this.isRamdom) {
+                        _this.playRamdomSong()
+                    } else {
+                        _this.nextSong()
+                    }
+
+                    audio.play()
+                    _this.render()
+                    _this.scrollToActiveSong()
+                }
+                prevBtn.onclick = function() {
+                    if (_this.isRamdom) {
+                        _this.playRamdomSong()
+                    } else {
+                        _this.prevSong()
+                    }
+
+                    audio.play()
+                    _this.render()
+                    _this.scrollToActiveSong()
+                }
+                ramdomBtn.onclick = function(e) {
+                    _this.isRamdom = !_this.isRamdom
+                    _this.setConfig('isRamdom', _this.isRamdom)
+                    ramdomBtn.classList.toggle('active', _this.isRamdom)
+                    console.log(e.target.ramdomBtn)
+
+                }
+                repeartBtn.onclick = function(e) {
+                    _this.isRepeat = !_this.isRepeat
+                    _this.setConfig('isRepeat', _this.isRepeat)
+                    repeartBtn.classList.toggle('active', _this.isRepeat)
+
+
+                }
+                audio.onended = function() {
+                    if (_this.isRepeat) {
+                        audio.play()
+                    } else {
+                        nextBtn.click()
+                    }
+                }
+                playlist.onclick = function(e) {
+                    const songNote = e.target.closest('.song:not(.active)')
+                    if (songNote || e.target.closest('.option')) {
+                        if (songNote) {
+                            _this.currentIndex = Number(songNote.dataset.index)
+                            _this.loadCurrentSong()
+                            _this.render()
+                            audio.play()
+                        }
+                        if (e.target.closest('.option')) {
+
+
+                        }
+                    }
+                }
+
+            },
+            scrollToActiveSong: function() {
+                setTimeout(() => {
+                    $('.song.active').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest',
+                    })
+                }, 300)
+            },
+            loadCurrentSong: function() {
+                heading.textContent = this.currentSong.name
+                cdThumb.style.backgroundImage = `url('${this.currentSong.image}')`
+                audio.src = this.currentSong.path
+            },
+            loadConfig: function() {
+                this.isRamdom = this.config.isRamdom
+                this.isRepeat = this.config.isRepeat
+
+            },
+            nextSong: function() {
+                this.currentIndex++
+                    if (this.currentIndex >= this.songs.length) {
+                        this.currentIndex = 0
+                    }
+                this.loadCurrentSong()
+            },
+            prevSong: function() {
+                this.currentIndex--
+                    if (this.currentIndex < 0) {
+                        this.currentIndex = this.songs.length - 1
+                    }
+                this.loadCurrentSong()
+            },
+            playRamdomSong: function() {
+                let newIndex
+                do {
+                    newIndex = this.currentIndex = Math.floor(Math.random() * this.songs.length)
+                } while (newIndex !== this.currentIndex)
+                this.currentIndex = newIndex
+                this.loadCurrentSong()
+            },
+
+            start: function() {
+                this.loadConfig();
+                this.handleEvents();
+                this.defineProperties();
+                this.render();
+                this.loadCurrentSong();
+                ramdomBtn.classList.toggle('active', this.isRamdom)
+                repeartBtn.classList.toggle('active', this.isRepeat)
+            }
+
+        }
+        app.start()
+    </script>
+    <!-- <script type="text/javascript" src="https://anonyviet.com/php/tuyetroi/noel.js"></script> -->
+    <script async src='//file.hstatic.net/1000033716/file/snow.js' type='text/javascript'></script>
+
+</body>
+
+</html>
